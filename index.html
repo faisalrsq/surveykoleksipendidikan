@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" data-lang="en" data-route="survey">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unlearning the Lesson, Reading Otherwise</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F5F3EC;
+    --card:#FFFFFF;
+    --row:#F1EFE5;
+    --ink:#17181B;
+    --muted:#6E6D66;
+    --line:rgba(23,24,27,0.08);
+    --accent:#E7B23E;
+    --accent-ink:#3A2C0A;
+    --grotesk:'Space Grotesk', sans-serif;
+    --sans:'Plus Jakarta Sans', -apple-system, sans-serif;
+    --measure:42rem;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:var(--sans); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  :focus-visible{outline:2px solid var(--ink); outline-offset:2px;}
+
+  [data-lang="en"] .t-id{display:none;}
+  [data-lang="id"] .t-en{display:none;}
+  [data-route="survey"] .route-fgd{display:none;}
+  [data-route="fgd"] .route-survey{display:none;}
+
+  .topbar{
+    position:sticky; top:0; z-index:10;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1rem 1.5rem; background:var(--bg);
+  }
+  .mark{font-family:var(--grotesk); font-weight:700; font-size:.95rem; letter-spacing:.02em;}
+  .pill-toggle{
+    display:inline-flex; background:var(--row); border-radius:999px; padding:3px;
+  }
+  .pill-toggle button{
+    font-family:var(--sans); font-size:.8rem; font-weight:600;
+    padding:.4rem 1rem; background:transparent; border:none; border-radius:999px;
+    color:var(--muted); cursor:pointer;
+  }
+  .pill-toggle button[aria-pressed="true"]{background:var(--ink); color:#fff;}
+
+  main{max-width:var(--measure); margin:0 auto; padding:1rem 1.4rem 5rem;}
+
+  .hero{padding:1.6rem 0 2.2rem;}
+  .eyebrow{
+    font-family:var(--sans); font-weight:700; font-size:.72rem; letter-spacing:.11em;
+    color:var(--accent-ink); background:var(--accent);
+    display:inline-block; padding:.3rem .7rem; border-radius:999px; margin-bottom:1rem;
+  }
+  .hero h1{
+    font-family:var(--grotesk); font-weight:700; font-size:clamp(1.9rem,5vw,2.6rem);
+    line-height:1.14; margin:0 0 .7rem;
+  }
+  .hero .subtitle{
+    font-family:var(--grotesk); font-weight:500; font-size:1.02rem; color:var(--muted);
+    margin:0 0 1.1rem; line-height:1.4;
+  }
+  .hero .desc{color:var(--muted); font-size:.98rem; margin:0;}
+
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:20px;
+    padding:2rem; margin-bottom:1.4rem;
+  }
+  .card h2{
+    font-family:var(--grotesk); font-weight:700; font-size:1.32rem; margin:0 0 1.1rem;
+  }
+  .card p{margin:0 0 1rem; color:var(--ink);}
+  .card p:last-child{margin-bottom:0;}
+  .greeting{font-weight:600; margin-bottom:1.1rem;}
+
+  .pill-inline{
+    display:inline-block; background:var(--ink); color:#fff;
+    font-family:var(--grotesk); font-weight:600; font-size:.86rem;
+    padding:.1rem .55rem; border-radius:999px; white-space:nowrap;
+  }
+
+  ul.plain{list-style:none; margin:1rem 0; padding:0;}
+  ul.plain li{
+    position:relative; padding-left:1.4rem; margin-bottom:.6rem; color:var(--ink);
+  }
+  ul.plain li::before{
+    content:""; position:absolute; left:0; top:.55em;
+    width:7px; height:7px; border-radius:50%; background:var(--ink);
+  }
+  ul.plain li:last-child{margin-bottom:0;}
+
+  .row-card{
+    background:var(--row); border-radius:14px; padding:.9rem 1.1rem;
+    display:flex; justify-content:space-between; gap:1rem; align-items:baseline;
+    margin-bottom:.6rem;
+  }
+  .row-card:last-child{margin-bottom:0;}
+  .row-card .k{font-weight:600; color:var(--muted); font-size:.88rem; white-space:nowrap;}
+  .row-card .v{font-weight:600; color:var(--ink); text-align:right;}
+  .row-card a{color:var(--ink); text-decoration-color:var(--accent); text-decoration-thickness:2px;}
+
+  .step-wrap{position:relative; padding-left:2.6rem; margin-top:1.4rem;}
+  .step-wrap::before{
+    content:""; position:absolute; left:.95rem; top:.4rem; bottom:.4rem; width:2px; background:var(--line);
+  }
+  .step{position:relative; margin-bottom:1.1rem;}
+  .step:last-child{margin-bottom:0;}
+  .step::before{
+    content:attr(data-n); position:absolute; left:-2.6rem; top:0;
+    width:1.9rem; height:1.9rem; border-radius:50%; background:var(--ink); color:#fff;
+    font-family:var(--grotesk); font-weight:600; font-size:.85rem;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step .row-card{margin-bottom:0;}
+  .step-note{margin-top:1.2rem; font-size:.9rem; color:var(--muted); font-style:italic;}
+
+  .tags{display:flex; flex-wrap:wrap; gap:.55rem; margin-top:.9rem;}
+  .tag{
+    background:var(--row); border-radius:999px; padding:.5rem .95rem;
+    font-size:.85rem; font-weight:600; color:var(--ink);
+  }
+
+  .cta-btn{
+    display:inline-flex; align-items:center; gap:.5rem; margin-top:1.1rem;
+    background:var(--accent); color:var(--accent-ink); text-decoration:none;
+    font-family:var(--grotesk); font-weight:700; font-size:.92rem;
+    padding:.75rem 1.3rem; border-radius:999px; border:none;
+  }
+  .cta-note{font-size:.82rem; color:var(--muted); margin-top:.6rem;}
+
+  .cover-card{
+    display:block; text-decoration:none;
+    background:var(--ink); color:#fff;
+    border-radius:16px; padding:1.8rem 1.6rem;
+    margin-top:1.1rem; max-width:340px;
+    box-shadow:0 1px 2px rgba(0,0,0,0.06);
+    transition:transform .15s ease, box-shadow .15s ease;
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  .cover-card:hover{transform:translateY(-3px); box-shadow:0 10px 24px rgba(23,24,27,0.18);}
+  .cover-eyebrow{
+    font-family:var(--sans); font-weight:700; font-size:.68rem; letter-spacing:.1em;
+    color:var(--accent-ink); background:var(--accent);
+    display:inline-block; padding:.25rem .6rem; border-radius:999px; margin-bottom:1rem;
+  }
+  .cover-title{
+    font-family:var(--grotesk); font-weight:700; font-size:1.25rem; line-height:1.2; margin-bottom:.6rem;
+  }
+  .cover-subtitle{
+    font-family:var(--grotesk); font-weight:500; font-size:.82rem; color:rgba(255,255,255,0.62);
+    line-height:1.4; margin-bottom:1.6rem;
+  }
+  .cover-foot{
+    display:flex; justify-content:space-between; align-items:center;
+    border-top:1px solid rgba(255,255,255,0.12); padding-top:.9rem;
+  }
+  .cover-foot .name{font-size:.78rem; font-weight:600; color:rgba(255,255,255,0.85);}
+  .cover-arrow{
+    width:1.6rem; height:1.6rem; border-radius:50%; background:var(--accent);
+    display:flex; align-items:center; justify-content:center; color:var(--accent-ink); flex-shrink:0;
+  }
+
+  .closing{
+    padding:1.6rem 0 0; text-align:left;
+  }
+  .closing p{color:var(--muted); font-style:italic; margin:0 0 1rem;}
+  .closing .sig{font-family:var(--grotesk); font-weight:700; font-size:1.05rem; color:var(--ink);}
+
+  @media (max-width:560px){
+    .card{padding:1.4rem;}
+    .row-card{flex-direction:column; gap:.15rem;}
+    .row-card .v{text-align:left;}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="mark">MP</span>
+  <div class="pill-toggle" role="group" aria-label="Language / Bahasa">
+    <button type="button" id="btn-en" aria-pressed="true">EN</button>
+    <button type="button" id="btn-id" aria-pressed="false">ID</button>
+  </div>
+</div>
+
+<main>
+
+  <div class="hero">
+    <span class="eyebrow t-en">RESEARCH UPDATE FOR PARTICIPANTS</span>
+    <span class="eyebrow t-id">INFORMASI KELANJUTAN RISET UNTUK PESERTA</span>
+    <h1>Unlearning the Lesson, Reading Otherwise</h1>
+    <p class="subtitle">Indonesian Communities and the Dutch East Indies Education Collection in Nationaal Onderwijsmuseum Dordrecht</p>
+    <p class="desc t-en">A short update for everyone who took part in the survey and FGD sessions on Dutch colonial-era school posters at the National Museum of Education, Dordrecht.</p>
+    <p class="desc t-id">Informasi lanjutan singkat untuk teman-teman yang sudah ikut serta dalam sesi survei dan FGD tentang poster sekolah masa kolonial Belanda di National Museum of Education, Dordrecht.</p>
+  </div>
+
+  <!-- Letter -->
+  <section class="card">
+    <p class="greeting t-en">Dear everyone,</p>
+    <p class="greeting t-id">Halo teman-teman semua,</p>
+
+    <p class="t-en">I hope this message finds you well. Thank you, first of all, for your enormous contribution to this research and effort to reinterpret a collection connected to Indonesia. This research could not have happened without you. While writing this paper, your voice and your opinions mattered to me personally, as part of what a study on polyvocality aims to listen to the people, and to move a step further from tokenism. On that note, I have also written a reflection on my own positionality and the limitations of this research; please see pages 15 - 30.</p>
+    <p class="t-id">Terima kasih, pertama-tama, atas kontribusi besar teman-teman pada riset ini dan pada upaya membaca ulang koleksi museum di Belanda yang terhubung dengan Indonesia. Riset ini tidak akan bisa terlaksana tanpa teman-teman. Selama menulis paper ini, suara dan pendapat teman-teman berarti bagi saya, sebagai bagian dari apa yang coba didengarkan dan disampaikan oleh kajian tentang polivokalitas, dan sebagai langkah maju dari sekadar tokenisme. Terkait hal ini, saya juga sudah menuliskan refleksi tentang posisi saya sendiri dan keterbatasan riset ini; teman-teman bisa lihat halaman 15-30 lebih lanjut.</p>
+
+    <p class="t-en">With this message, I want to let everyone know that the study is finished. I have submitted the final report to Reinwardt Academie. I have not taken any further steps toward conferences or other publications at this stage, and I take full responsibility for the knowledge produced through this research.</p>
+    <p class="t-id">Melalui pesan ini, saya ingin memberi tahu bahwa riset ini sudah selesai dan laporan risetnya sudah terkumpul ke Reinwardt Academie. Saya belum mengambil langkah lebih lanjut untuk konferensi atau publikasi lain pada tahap ini, dan saya sadar betul atas tanggung jawab penuh atas pengetahuan yang dihasilkan oleh riset ini.</p>
+
+    <p class="t-en">This research runs from February to June 2026. Any changes to the exhibition team or to the research itself after June 2026 fall outside what this research can account for.</p>
+    <p class="t-id">Riset ini berlangsung dari Februari hingga Juni 2026. Perubahan apa pun pada tim pameran atau pada riset ini setelah Juni 2026 berada di luar tanggung jawab riset ini.</p>
+
+    <p class="t-en">If you feel you did not properly consent to any part of the research, or if a payment is still missing, especially from the FGD sessions, please let me know me. I will do my best to accommodate that and to revise it where necessary. Nothing here has been officially published yet: the access you have right now is closed access, shared with you specifically as a respondent.</p>
+    <p class="t-id">Kalau teman-teman merasa belum benar-benar memberikan persetujuan (consent) untuk bagian mana pun dari riset ini, atau ada pembayaran yang belum diterima, terutama dari sesi FGD, bisa langsung menghubungi saya. Saya akan berusaha semaksimal mungkin untuk mengakomodasi dan menulis revisi bila diperlukan. Riset ini belum dipublikasikan secara resmi dan akses yang teman-teman miliki saat ini adalah akses tertutup, dibagikan khusus untuk teman-teman sebagai responden.</p>
+
+    <p class="t-en">Sending this is also meant to open a space. If you want to know more, question something, or push back on how I have read or written about your contribution, I would love to hear it. And if you would like further updates on the exhibition or the research as it continues, write to me for that too!</p>
+    <p class="t-id">Pesan ini juga berfungsi sebagai pembuka ruang yang lebih terbuka bagi riset ini. Kalau teman-teman ingin tahu lebih banyak, mempertanyakan sesuatu, atau mengkritik bagaimana saya membaca atau menuliskan respon, saya sangat-sangat terbuka untuk ini. Dan kalau teman-teman ingin informasi lebih lanjut soal pameran atau riset ini ke depannya, hubungi juga ya!</p>
+
+    <p class="t-en" style="font-weight:600; margin-bottom:.6rem;">In short, reach out if:</p>
+    <p class="t-id" style="font-weight:600; margin-bottom:.6rem;">Singkatnya, teman-teman bisa menghubungi kalau:</p>
+    <ul class="plain t-en">
+      <li>you want updates on the exhibition or on future publications</li>
+      <li>something about how your contribution was read or written up doesn't sit right with you</li>
+      <li>consent feels incomplete</li>
+      <li>none of the above, but something is still on your mind</li>
+    </ul>
+    <ul class="plain t-id">
+      <li>ingin informasi soal pameran atau publikasi berikutnya</li>
+      <li>ada yang terasa kurang pas dari cara kontribusi atau respon kamu dibaca atau ditulis</li>
+      <li>consent terasa belum lengkap</li>
+      <li>hal atau ide lain yang kepikiran</li>
+    </ul>
+
+    <p class="t-en">If you have any comments, opinions, or responses about what is written here, please let me know before <span class="pill-inline">20 September 2026</span>. Everything else, anything outside of what is written in this document, has no deadline; feel free to contact me anytime.</p>
+    <p class="t-id">Kalau teman-teman punya komentar, pendapat, atau tanggapan tentang apa pun yang tertulis di sini, sampaikan ke saya sebelum <span class="pill-inline">20 September 2026</span>. Untuk hal-hal lain, di luar apa yang tertulis dalam dokumen ini, tidak ada batas waktu; silakan hubungi saya kapan saja.</p>
+
+    <div class="row-card">
+      <span class="k">Email</span>
+      <span class="v"><a href="mailto:maria28angelita@gmail.com">maria28angelita@gmail.com</a></span>
+    </div>
+    <div class="row-card">
+      <span class="k">WhatsApp</span>
+      <span class="v"><a href="https://wa.me/31687060517">+31 6 87060517</a></span>
+    </div>
+  </section>
+
+  <!-- Feedback -->
+  <section class="card">
+    <h2 class="t-en">Next steps for feedbacks</h2>
+    <h2 class="t-id">Langkah Selanjutnya untuk Masukan</h2>
+    <p class="t-en">Any feedback about the writing in the thesis matters to me. I want to be upfront about one limitation, though: Reinwardt Academie might not currently allow changes to the main content of a submitted report, so I cannot rewrite chapters at this stage. What I can do is add your feedback as an additional appendix document.</p>
+    <p class="t-id">Masukan apa pun tentang tulisan dalam tesis ini akan sangat bermanfaat. Namun, untuk hal ini ada satu keterbatasan, yaitu pihak Reinwardt Academie mungkin saat ini belum mengizinkan perubahan pada konten utama laporan yang sudah diserahkan, jadi saya tidak bisa menulis ulang bab-babnya pada tahap ini. Yang bisa saya lakukan adalah menambahkan masukan teman-teman sebagai dokumen appendix tambahan.</p>
+  </section>
+
+  <!-- Find your part -->
+  <section class="card">
+    <h2 class="t-en">Find your part</h2>
+    <h2 class="t-id">Temukan Bagian Kamu</h2>
+    <p class="t-en">The full report is long, and I know not everyone has time to read all of it. You do not have to. Follow whichever path matches how you took part; it will point you straight to your pages.</p>
+    <p class="t-id">Laporan lengkapnya panjang, dan saya tahu tidak semua orang punya waktu untuk membaca semuanya. Teman-teman bisa langsung baca kontribusi kalian di bagian ini:</p>
+
+    <div class="pill-toggle" role="group" aria-label="Choose your role">
+      <button type="button" id="btn-survey" aria-pressed="true">
+        <span class="t-en">Survey</span><span class="t-id">Survei</span>
+      </button>
+      <button type="button" id="btn-fgd" aria-pressed="false">FGD</button>
+    </div>
+
+    <div class="step-wrap route-survey">
+      <div class="step" data-n="1">
+        <div class="row-card">
+          <span class="k t-en">Pages 15–31</span><span class="k t-id">Halaman 15–31</span>
+          <span class="v t-en">how the survey was designed and read</span>
+          <span class="v t-id">bagaimana survei ini dirancang dan dibaca</span>
+        </div>
+      </div>
+      <div class="step" data-n="2">
+        <div class="row-card">
+          <span class="k">Appendix 2–3</span>
+          <span class="v t-en">your answers, exactly as you gave them</span>
+          <span class="v t-id">jawaban kamu di Formulir</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="step-wrap route-fgd">
+      <div class="step" data-n="1">
+        <div class="row-card">
+          <span class="k t-en">Pages 15–30</span><span class="k t-id">Halaman 15–30</span>
+          <span class="v t-en">methods, the same section survey respondents read too</span>
+          <span class="v t-id">metode, bagian yang sama yang juga dibaca responden survei</span>
+        </div>
+      </div>
+      <div class="step" data-n="2">
+        <div class="row-card">
+          <span class="k t-en">Pages 38–48</span><span class="k t-id">Halaman 38–48</span>
+          <span class="v t-en">your session's findings, and what came out of it</span>
+          <span class="v t-id">temuan dari sesi FGD, dan apa yang muncul di dalamnya</span>
+        </div>
+      </div>
+      <div class="step" data-n="3">
+        <div class="row-card">
+          <span class="k">Appendix 4–9</span>
+          <span class="v t-en">the Canva boards we filled in together during the session</span>
+          <span class="v t-id">tautan Canva yang kita isi bersama selama sesi berlangsung</span>
+        </div>
+      </div>
+    </div>
+
+    <p class="step-note t-en">Your name appears abbreviated throughout, exactly as agreed when you signed the consent form.</p>
+    <p class="step-note t-id">Nama teman-teman ditulis dalam bentuk singkatan di seluruh laporan, sesuai dengan yang sudah disepakati di consent form.</p>
+  </section>
+
+  <!-- AI use -->
+  <section class="card">
+    <h2 class="t-en">AI Use Information</h2>
+    <h2 class="t-id">Informasi Penggunaan AI</h2>
+    <p class="t-en">Where AI tools were used in this research, for example, in translation or checking, that use is declared in Appendix 1. This is part of being transparent about how the report was actually made.</p>
+    <p class="t-id">Di bagian mana pun AI digunakan dalam riset ini, misalnya untuk membantu penerjemahan atau pengecekan, penggunaannya sudah dicantumkan di Appendix 1</p>
+  </section>
+
+  <!-- Publications -->
+  <section class="card">
+    <h2 class="t-en">Publications Information</h2>
+    <h2 class="t-id">Informasi Publikasi</h2>
+    <p class="t-en">This report will be kept in the Reinwardt Academie library. I have also given consent for it to be made publicly available through an open-access online repository. A few sections are excluded from that public version, since they contain raw recordings and transcripts rather than analysis:</p>
+    <p class="t-id">Laporan ini akan disimpan di perpustakaan Reinwardt Academie. Saya juga sudah memberikan izin agar laporan ini dapat diakses publik melalui repositori online open-access internal Amsterdamse Hogeschool voor de Kunsten (Amsterdam University of the Arts). Ada beberapa bagian yang dikecualikan dari versi publik tersebut, karena berisi rekaman dan transkrip asli, bukan hasil analisis:</p>
+    <div class="tags">
+      <span class="tag t-en">Appendix 8: Emotion Networking Recording</span>
+      <span class="tag t-id">Appendix 8: Rekaman Sesi Emotion Networking</span>
+      <span class="tag t-en">Appendix 10: Emotion Networking Session Transcript</span>
+      <span class="tag t-id">Appendix 10: Transkrip Sesi Emotion Networking</span>
+      <span class="tag t-en">Appendix 12: Interview with NOM, Transcript &amp; Recording</span>
+      <span class="tag t-id">Appendix 12: Transkrip &amp; Rekaman Wawancara dengan NOM</span>
+    </div>
+  </section>
+
+  <!-- Report file -->
+  <section class="card">
+    <h2 class="t-en">Report File</h2>
+    <h2 class="t-id">Hasil Laporan</h2>
+    <p class="t-en">This is the exact version submitted to Reinwardt Academie. The full report is attached to this message as a separate PDF file.</p>
+    <p class="t-id">Ini adalah versi yang sama seperti yang diserahkan ke Reinwardt Academie. Laporan lengkapnya bisa dilihat <a href="https://drive.google.com/drive/u/0/folders/1W83ubqUgG4VPYPLgANh3TjRq8PCcgFXE" target="_blank" rel="noopener noreferrer">di sini</a> yaaa!</p>
+
+    <a class="cover-card" href="https://drive.google.com/drive/u/0/folders/1W83ubqUgG4VPYPLgANh3TjRq8PCcgFXE" target="_blank" rel="noopener noreferrer">
+      <span class="cover-eyebrow t-en">RESEARCH REPORT</span>
+      <span class="cover-eyebrow t-id">LAPORAN RISET</span>
+      <div class="cover-title">Unlearning the Lesson, Reading Otherwise</div>
+      <div class="cover-subtitle">Indonesian Communities and the Dutch East Indies Education Collection in Nationaal Onderwijsmuseum Dordrecht</div>
+      <div class="cover-foot">
+        <span class="name">Maria Angelita Dian Putri</span>
+        <span class="cover-arrow">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M8 7h9v9"/></svg>
+        </span>
+      </div>
+    </a>
+  </section>
+
+  <div class="closing">
+    <p class="t-en">Thank you once again. This message stays open for as long as you need it. There is no need to reply unless you want to; it is simply here to keep the door open!</p>
+    <p class="t-id">Sekali lagi, terima kasih. Akses pesan ini tetap terbuka selama teman-teman membutuhkannya. Sampai ketemu!</p>
+    <p class="sig">Maria Angelita Dian Putri</p>
+  </div>
+
+</main>
+
+<script>
+  const html = document.documentElement;
+  const btnEn = document.getElementById('btn-en');
+  const btnId = document.getElementById('btn-id');
+  const btnSurvey = document.getElementById('btn-survey');
+  const btnFgd = document.getElementById('btn-fgd');
+
+  function setLang(lang){
+    html.setAttribute('data-lang', lang);
+    html.setAttribute('lang', lang);
+    btnEn.setAttribute('aria-pressed', String(lang === 'en'));
+    btnId.setAttribute('aria-pressed', String(lang === 'id'));
+  }
+  function setRoute(route){
+    html.setAttribute('data-route', route);
+    btnSurvey.setAttribute('aria-pressed', String(route === 'survey'));
+    btnFgd.setAttribute('aria-pressed', String(route === 'fgd'));
+  }
+  btnEn.addEventListener('click', () => setLang('en'));
+  btnId.addEventListener('click', () => setLang('id'));
+  btnSurvey.addEventListener('click', () => setRoute('survey'));
+  btnFgd.addEventListener('click', () => setRoute('fgd'));
+</script>
+
+</body>
+</html>
